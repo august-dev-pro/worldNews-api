@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  api:
+    image: node:16
+    container_name: news-api
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=postgresql://postgres:seleka%4013@localhost:5432/News_DB?schema=public
+    depends_on:
+      - db
+  db:
+    image: postgres:13
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgresql
+      POSTGRES_PASSWORD: seleka@13
+      POSTGRES_DB: newsdb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+volumes:
+  postgres-data:

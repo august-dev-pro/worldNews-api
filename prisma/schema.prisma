@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  articles    Article[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Source {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  url       String?   @unique
+  logoUrl   String?
+  articles  Article[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Author {
+  id        String    @id @default(uuid())
+  name      String
+  email     String?   @unique
+  articles  Article[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Tag {
+  id        String       @id @default(uuid())
+  name      String       @unique
+  articles  ArticleTag[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+
+  article Article @relation(fields: [articleId], references: [id])
+  tag     Tag     @relation(fields: [tagId], references: [id])
+
+  @@id([articleId, tagId])
+}
+
+model User {
+  id        String     @id @default(uuid())
+  name      String
+  email     String     @unique
+  password  String
+  favorites Favorite[]
+  comments  Comment[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Favorite {
+  userId    String
+  articleId String
+
+  user    User    @relation(fields: [userId], references: [id])
+  article Article @relation(fields: [articleId], references: [id])
+
+  @@id([userId, articleId])
+}
+
+model Comment {
+  id        String @id @default(uuid())
+  content   String
+  userId    String
+  articleId String
+
+  user    User    @relation(fields: [userId], references: [id])
+  article Article @relation(fields: [articleId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Article {
+  id         String       @id @default(uuid())
+  title      String
+  content    String
+  url        String       @unique
+  imageUrl   String?
+  sourceUrl  String?
+  categoryId String
+  category   Category     @relation(fields: [categoryId], references: [id])
+  authorId   String?
+  author     Author?      @relation(fields: [authorId], references: [id])
+  sourceId   String?      // <-- Ajouté, optionnel
+  source     Source?      @relation(fields: [sourceId], references: [id])
+  tags       ArticleTag[]
+  comments   Comment[]
+  language   String?
+  sentiment  String?
+  publishedAt DateTime?   // <-- Ajouté, optionnel
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Favorite   Favorite[]
+}
