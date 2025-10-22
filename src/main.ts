@@ -75,8 +75,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-
-/* DATABASE_URL = 'https://worldnews-api.onrender.com'
-DATABASE_URL = 'postgresql://neondb_owner:npg_6GNy7nrdFzIw@ep-raspy-field-adjakxbh-pooler.c-2.us-east-1.aws.neon.tech/worldnews-db?sslmode=require&channel_binding=require'
-NODE_ENV = 'production'
-npm install; npm run build; npx prisma migrate deploy */
